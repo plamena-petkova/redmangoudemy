@@ -10,6 +10,8 @@ import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
 import { useEffect } from "react";
 import { setShoppingCart } from "../Store/Redux/shoppingCartSlice";
 import ShoppingCart from "./Page/ShoppingCart";
+import Login from "./Page/Login";
+import Register from "./Page/Register";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,9 +22,9 @@ function App() {
 
   useEffect(() => {
     if (!isLoading) {
-      if(data) {
-        dispatch(setShoppingCart(data.result.cartItems));
-      }
+   
+        dispatch(setShoppingCart(data.result?.cartItems));
+     
       
     }
   }, [data]);
@@ -33,6 +35,8 @@ function App() {
       <div className="pb-5">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register/>}></Route>
           <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
           <Route
             path="/menuItemDetails/:menuItemId"
