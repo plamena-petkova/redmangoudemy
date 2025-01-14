@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { MenuItemModel } from "../../../Interfaces";
 import carrot from "../../../assets/pictures/carrot love.jpg";
+import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
+import { useState } from "react";
+import { MiniLoader } from "../Common";
 
 interface Props {
   menuItem: MenuItemModel;
@@ -17,6 +20,22 @@ import panner from "../../../assets/pictures/paneer pizza.jpg";
 */
 
 function MenuItemCard(props: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isAddingToCart, setIsAddingToCart] = useState<boolean>();
+
+  const [updateShoppingCart] = useUpdateShoppingCartMutation();
+
+  const handleAddToCart = async (menuItemId: number) => {
+    setIsAddingToCart(true);
+    const response = await updateShoppingCart({
+      menuItemId: menuItemId,
+      updateQuantityBy: 1,
+      userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+    });
+    
+    setIsAddingToCart(false);
+  };
+
   return (
     <div className="col-md-4 col-12 p-4">
       <div
@@ -50,24 +69,33 @@ function MenuItemCard(props: Props) {
               &nbsp; {props.menuItem.specialTag}
             </i>
           )}
-
-          <i
-            className="bi bi-cart-plus btn btn-outline-danger"
-            style={{
-              position: "absolute",
-              top: "15px",
-              right: "15px",
-              padding: "5px 10px",
-              borderRadius: "3px",
-              outline: "none !important",
-              cursor: "pointer",
-            }}
-          ></i>
+          {isAddingToCart ? (
+            <div style={{ position: "absolute", top: "15px", right: "15px" }}>
+              <MiniLoader />
+            </div>
+          ) : (
+            <i
+              className="bi bi-cart-plus btn btn-outline-danger"
+              style={{
+                position: "absolute",
+                top: "15px",
+                right: "15px",
+                padding: "5px 10px",
+                borderRadius: "3px",
+                outline: "none !important",
+                cursor: "pointer",
+              }}
+              onClick={() => handleAddToCart(props.menuItem.id)}
+            ></i>
+          )}
 
           <div className="text-center">
             <p className="card-title m-0 text-success fs-3">
               {" "}
-              <Link to={`/menuItemDetails/${props.menuItem.id}`} style={{textDecoration:'none', color:'green'}}>
+              <Link
+                to={`/menuItemDetails/${props.menuItem.id}`}
+                style={{ textDecoration: "none", color: "green" }}
+              >
                 {props.menuItem.name}
               </Link>
             </p>

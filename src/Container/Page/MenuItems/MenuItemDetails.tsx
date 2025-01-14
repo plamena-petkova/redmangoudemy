@@ -1,23 +1,52 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMenuItemByIdQuery } from "../../../Apis/menuItemApi";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setMenuItem } from "../../../Store/Redux/menuItemSlice";
 import carrot from "../../../assets/pictures/carrot love.jpg";
+import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
+import { MainLoader, MiniLoader } from "../Common";
+//USER_ID = c931fb4f-1de4-45a7-abef-0edbae3b91b1
 
 function MenuItemDetails() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const menuItemId = useParams();
 
-  const { data, isLoading } = useGetMenuItemByIdQuery(Object.values(menuItemId));
+  const [updateShoppingCart] = useUpdateShoppingCartMutation();
+
+  const [quantity, setQuantity] = useState(1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isAddingToCart, setIsAddingToCart] = useState<boolean>();
+
+  const { data, isLoading } = useGetMenuItemByIdQuery(
+    Object.values(menuItemId)
+  );
+
+  const handleQuantity = (counter: number) => {
+    let newQuantity = quantity + counter;
+    if (newQuantity === 0) {
+      newQuantity = 1;
+    }
+    setQuantity(newQuantity);
+  };
 
   useEffect(() => {
     if (!isLoading) {
       dispatch(setMenuItem(menuItemId));
     }
   }, [isLoading]);
+
+  const handleAddToCart = async (menuItemId: number) => {
+    setIsAddingToCart(true);
+    await updateShoppingCart({
+      menuItemId: menuItemId,
+      updateQuntityBy: quantity,
+      userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+    });
+
+    setIsAddingToCart(false);
+  };
 
   return (
     <div className="container pt-4 pt-md-5">
@@ -51,23 +80,37 @@ function MenuItemDetails() {
             >
               <i
                 className="bi bi-dash p-1"
+                onClick={() => handleQuantity(-1)}
                 style={{ fontSize: "25px", cursor: "pointer" }}
               ></i>
-              <span className="h3 mt-3 px-3">XX</span>
+              <span className="h3 mt-3 px-3">{quantity}</span>
               <i
+                onClick={() => handleQuantity(+1)}
                 className="bi bi-plus p-1"
                 style={{ fontSize: "25px", cursor: "pointer" }}
               ></i>
             </span>
             <div className="row pt-4">
               <div className="col-5">
-                <button className="btn btn-success form-control">
-                  Add to Cart
-                </button>
+                {isAddingToCart ? (
+                  <button disabled className="btn btn-success form-control">
+                    <MiniLoader />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleAddToCart(data.result.id)}
+                    className="btn btn-success form-control"
+                  >
+                    Add to Cart
+                  </button>
+                )}
               </div>
 
               <div className="col-5 ">
-                <button className="btn btn-secondary form-control" onClick={() => navigate(-1)}>
+                <button
+                  className="btn btn-secondary form-control"
+                  onClick={() => navigate(-1)}
+                >
                   Back to Home
                 </button>
               </div>
@@ -83,12 +126,7 @@ function MenuItemDetails() {
           </div>
         </div>
       ) : (
-        <div
-          className="d-flex justify-content-center"
-          style={{ width: "100%" }}
-        >
-          Loading...
-        </div>
+        <MainLoader />
       )}
     </div>
   );
