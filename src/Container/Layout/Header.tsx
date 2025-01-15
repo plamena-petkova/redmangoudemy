@@ -1,11 +1,14 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/mango.png";
 import { RootStore } from "../../Store/Redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CartItemModel } from "../../Interfaces";
 import { UserModel } from "../../Interfaces/UserModel";
+import { emptyUserState, setLoggedInUser } from "../../Store/Redux/userAuthSlice";
 
 function Header() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const shoppingCartFromStore: CartItemModel[] = useSelector(
     (state: RootStore) => state.shoppingCartStore.cartItems ?? []
   );
@@ -13,6 +16,11 @@ function Header() {
     (state: RootStore) => state.userAuthStore
   );
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    dispatch(setLoggedInUser({...emptyUserState}));
+    navigate('/')
+  }
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark navbar-dark ">
@@ -84,14 +92,18 @@ function Header() {
             </li>
             <div className="d-flex" style={{ marginLeft: "auto" }}>
               {userData.id && (
-                <li className="nav-item ">
-                  <button
-                    className="btn btn-success btn-outlined rounded-pill text-white mx-2"
-                    style={{ border: "none", height: "40px", width: "100px" }}
-                  >
-                    Logout
-                  </button>
-                </li>
+                <>
+                  <p className="text-success text-center m-2">Welcome, {userData.fullName}</p>
+                  <li className="nav-item ">
+                    <button
+                      className="btn btn-success btn-outlined rounded-pill text-white mx-2"
+                      style={{ border: "none", height: "40px", width: "100px" }}
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
               )}
               {!userData.id && (
                 <>

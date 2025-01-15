@@ -12,6 +12,9 @@ import { setShoppingCart } from "../Store/Redux/shoppingCartSlice";
 import ShoppingCart from "./Page/ShoppingCart";
 import Login from "./Page/Login";
 import Register from "./Page/Register";
+import { jwtDecode } from "jwt-decode";
+import { UserModel } from "../Interfaces/UserModel";
+import { setLoggedInUser } from "../Store/Redux/userAuthSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,11 +24,16 @@ function App() {
   );
 
   useEffect(() => {
+    const localToken = localStorage.getItem("token");
+    if (localToken) {
+      const { fullName, id, email, role }: UserModel = jwtDecode(localToken);
+      dispatch(setLoggedInUser({ fullName, id, email, role }));
+    }
+  }, []);
+
+  useEffect(() => {
     if (!isLoading) {
-   
-        dispatch(setShoppingCart(data.result?.cartItems));
-     
-      
+      dispatch(setShoppingCart(data.result?.cartItems));
     }
   }, [data]);
 
@@ -36,7 +44,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register/>}></Route>
+          <Route path="/register" element={<Register />}></Route>
           <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
           <Route
             path="/menuItemDetails/:menuItemId"
