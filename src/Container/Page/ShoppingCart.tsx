@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+import withAuth from "../../HoC/withAuth";
 import { CartPickupDetails, CartSummary } from "./Cart";
 
 function ShoppingCart() {
@@ -11,4 +13,4 @@ function ShoppingCart() {
   );
 }
 
-export default ShoppingCart;
+export default withAuth(ShoppingCart);

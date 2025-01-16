@@ -2,8 +2,10 @@ import { useState } from "react";
 import inputHelper from "../../Helpers/inputHelper";
 import { useRegisterUserMutation } from "../../Apis/AuthApi";
 import { apiResponse } from "../../Interfaces";
+import toastNotify from "../../Helpers/toastNotify";
 
 function Register() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>();
   const [userData, setUserData] = useState({
     userName: "",
@@ -21,7 +23,7 @@ function Register() {
     setUserData(tempData);
   };
 
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     const response: apiResponse = await registerUser({
@@ -30,14 +32,17 @@ function Register() {
       role: userData.role,
       name: userData.name,
     });
-    if(response.data) {
+    if (response.data) {
+      toastNotify("Registration is successful! Please, login to continue!");
+      navigate('/login')
       console.log(response.data);
-    } else if(response.error) {
+    } else if (response.error) {
       console.log(response.error.data.errorMessages[0]);
+      toastNotify(response.error.data.errorMessages[0],'error');
     }
 
     setLoading(false);
-  }
+  };
 
   return (
     <div className="container text-center">

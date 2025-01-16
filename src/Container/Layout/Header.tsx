@@ -4,7 +4,10 @@ import { RootStore } from "../../Store/Redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { CartItemModel } from "../../Interfaces";
 import { UserModel } from "../../Interfaces/UserModel";
-import { emptyUserState, setLoggedInUser } from "../../Store/Redux/userAuthSlice";
+import {
+  emptyUserState,
+  setLoggedInUser,
+} from "../../Store/Redux/userAuthSlice";
 
 function Header() {
   const dispatch = useDispatch();
@@ -17,10 +20,10 @@ function Header() {
   );
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    dispatch(setLoggedInUser({...emptyUserState}));
-    navigate('/')
-  }
+    localStorage.removeItem("token");
+    dispatch(setLoggedInUser({ ...emptyUserState }));
+    navigate("/");
+  };
 
   return (
     <nav className="navbar navbar-expand-lg bg-dark navbar-dark ">
@@ -53,12 +56,9 @@ function Header() {
                 to="/shoppingCart"
               >
                 <i className="bi bi-cart"></i>
-                {shoppingCartFromStore?.length
-                  ? shoppingCartFromStore.length
-                  : ""}
+                {userData.id && `${shoppingCartFromStore?.length}`}
               </NavLink>
             </li>
-
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
@@ -93,7 +93,9 @@ function Header() {
             <div className="d-flex" style={{ marginLeft: "auto" }}>
               {userData.id && (
                 <>
-                  <p className="text-success text-center m-2">Welcome, {userData.fullName}</p>
+                  <p className="text-success text-center m-2">
+                    Welcome, {userData.fullName}
+                  </p>
                   <li className="nav-item ">
                     <button
                       className="btn btn-success btn-outlined rounded-pill text-white mx-2"

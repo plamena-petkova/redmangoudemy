@@ -10,6 +10,11 @@ import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
 function CartSummary() {
   const dispatch = useDispatch();
 
+  
+    const userData: UserModel = useSelector(
+      (state: RootStore) => state.userAuthStore
+    );
+
   const [updateShoppingCart] = useUpdateShoppingCartMutation();
 
   const shoppingCartFromStore: CartItemModel[] = useSelector(
@@ -31,14 +36,14 @@ function CartSummary() {
       updateShoppingCart({
         menuItemId: cartItem.menuItem?.id,
         updateQuantityBy: 0,
-        userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+        userId: userData.id,
       });
       dispatch(removeFromCart({ cartItem, quantity: 0 }));
     } else {
       updateShoppingCart({
         menuItemId: cartItem.menuItem?.id,
         updateQuantityBy: updateQuantityBy,
-        userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+        userId: userData.id,
       });
       dispatch(
         updateQuantity({

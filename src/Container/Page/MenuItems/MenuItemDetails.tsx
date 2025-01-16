@@ -1,12 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMenuItemByIdQuery } from "../../../Apis/menuItemApi";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setMenuItem } from "../../../Store/Redux/menuItemSlice";
 import carrot from "../../../assets/pictures/carrot love.jpg";
 import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
 import { MainLoader, MiniLoader } from "../Common";
-//USER_ID = c931fb4f-1de4-45a7-abef-0edbae3b91b1
+import toastNotify from "../../../Helpers/toastNotify";
+import { UserModel } from "../../../Interfaces/UserModel";
+import { RootStore } from "../../../Store/Redux/store";
 
 function MenuItemDetails() {
   const dispatch = useDispatch();
@@ -14,6 +16,11 @@ function MenuItemDetails() {
   const menuItemId = useParams();
 
   const [updateShoppingCart] = useUpdateShoppingCartMutation();
+
+  const userData: UserModel = useSelector(
+    (state: RootStore) => state.userAuthStore
+  );
+
 
   const [quantity, setQuantity] = useState(1);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,12 +45,20 @@ function MenuItemDetails() {
   }, [isLoading]);
 
   const handleAddToCart = async (menuItemId: number) => {
+    if(!userData.id) {
+      navigate('/login');
+      return;
+    }
     setIsAddingToCart(true);
-    await updateShoppingCart({
+    const response = await updateShoppingCart({
       menuItemId: menuItemId,
       updateQuntityBy: quantity,
-      userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+      userId: userData.id,
     });
+
+    if(response.data && response.data.isSuccess) {
+      toastNotify("Item added to cart!")
+    }
 
     setIsAddingToCart(false);
   };

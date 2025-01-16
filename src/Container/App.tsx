@@ -5,7 +5,7 @@ import { Footer, Header } from "./Layout";
 import HomePage from "../Pages/Home";
 import { Route, Routes } from "react-router-dom";
 import { MenuItemDetails } from "./Page/MenuItems";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
 import { useEffect } from "react";
 import { setShoppingCart } from "../Store/Redux/shoppingCartSlice";
@@ -15,13 +15,19 @@ import Register from "./Page/Register";
 import { jwtDecode } from "jwt-decode";
 import { UserModel } from "../Interfaces/UserModel";
 import { setLoggedInUser } from "../Store/Redux/userAuthSlice";
+import AuthenticationTest from "./Page/AuthenticationTest";
+import AuthenticationTestAdmin from "./Page/AuthenticationTestAdmin";
+import AccessDenied from "./Page/AccessDenied";
+import { RootStore } from "../Store/Redux/store";
 
 function App() {
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useGetShoppingCartQuery(
-    "8402373c-a5a4-4218-8d5b-c22c5f9b6503"
+  const userData: UserModel = useSelector(
+    (state: RootStore) => state.userAuthStore
   );
+
+  const { data, isLoading } = useGetShoppingCartQuery(userData.id);
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
@@ -45,6 +51,16 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route
+            path="/authentication"
+            element={<AuthenticationTest />}
+          ></Route>
+          <Route
+            path="/authorization"
+            element={<AuthenticationTestAdmin />}
+          ></Route>
+          <Route path="/accessDenied" element={<AccessDenied />}></Route>
+          <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
           <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
           <Route
             path="/menuItemDetails/:menuItemId"

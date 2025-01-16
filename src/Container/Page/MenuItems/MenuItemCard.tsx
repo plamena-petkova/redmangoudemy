@@ -1,38 +1,44 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MenuItemModel } from "../../../Interfaces";
 import carrot from "../../../assets/pictures/carrot love.jpg";
 import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
 import { useState } from "react";
 import { MiniLoader } from "../Common";
+import toastNotify from "../../../Helpers/toastNotify";
+import { UserModel } from "../../../Interfaces/UserModel";
+import { RootStore } from "../../../Store/Redux/store";
+import { useSelector } from "react-redux";
 
 interface Props {
   menuItem: MenuItemModel;
 }
 
-/*
-import carrot from "../../../assets/pictures/carrot love.jpg";
-import spring from "../../../assets/pictures/spring roll.jpg";
-import idli from "../../../assets/pictures/idli.jpg";
-import hakka from "../../../assets/pictures/hakka noodles.jpg";
-import pani from "../../../assets/pictures/pani puri.jpg";
-import malai from "../../../assets/pictures/malai kofta.jpg";
-import panner from "../../../assets/pictures/paneer pizza.jpg";
-*/
-
 function MenuItemCard(props: Props) {
+  const navigate = useNavigate();
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isAddingToCart, setIsAddingToCart] = useState<boolean>();
 
   const [updateShoppingCart] = useUpdateShoppingCartMutation();
 
+  const userData: UserModel = useSelector(
+    (state: RootStore) => state.userAuthStore
+  );
+
   const handleAddToCart = async (menuItemId: number) => {
+    if (!userData.id) {
+      navigate("/login");
+      return;
+    }
     setIsAddingToCart(true);
     const response = await updateShoppingCart({
       menuItemId: menuItemId,
       updateQuantityBy: 1,
-      userId: "8402373c-a5a4-4218-8d5b-c22c5f9b6503",
+      userId: userData.id,
     });
-    
+    if (response.data && response.data.isSuccess) {
+      toastNotify("Item added to cart!");
+    }
     setIsAddingToCart(false);
   };
 
