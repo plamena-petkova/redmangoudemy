@@ -20,6 +20,7 @@ import AuthenticationTestAdmin from "./Page/AuthenticationTestAdmin";
 import AccessDenied from "./Page/AccessDenied";
 import { RootStore } from "../Store/Redux/store";
 import Payment from "./Page/Payment";
+import OrderConfirm from "./Page/OrderConfirm";
 
 function App() {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
-          <Route path="/payment" element={<Payment />}></Route>
+
           <Route
             path="/authentication"
             element={<AuthenticationTest />}
@@ -63,7 +64,8 @@ function App() {
           ></Route>
           <Route path="/accessDenied" element={<AccessDenied />}></Route>
           <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
-          <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
+          <Route path="/payment" element={<Payment />}></Route>
+          <Route path="/order/orderConfirmed/:id" element={<OrderConfirm />}></Route>
           <Route
             path="/menuItemDetails/:menuItemId"
             element={<MenuItemDetails />}
