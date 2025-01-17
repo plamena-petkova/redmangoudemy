@@ -19,6 +19,7 @@ import AuthenticationTest from "./Page/AuthenticationTest";
 import AuthenticationTestAdmin from "./Page/AuthenticationTestAdmin";
 import AccessDenied from "./Page/AccessDenied";
 import { RootStore } from "../Store/Redux/store";
+import Payment from "./Page/Payment";
 
 function App() {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ function App() {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="/payment" element={<Payment />}></Route>
           <Route
             path="/authentication"
             element={<AuthenticationTest />}

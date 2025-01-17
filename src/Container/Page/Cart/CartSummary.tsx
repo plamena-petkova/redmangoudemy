@@ -6,6 +6,7 @@ import {
   updateQuantity,
 } from "../../../Store/Redux/shoppingCartSlice";
 import { useUpdateShoppingCartMutation } from "../../../Apis/shoppingCartApi";
+import { UserModel } from "../../../Interfaces/UserModel";
 
 function CartSummary() {
   const dispatch = useDispatch();

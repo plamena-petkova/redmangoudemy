@@ -3,6 +3,7 @@ import inputHelper from "../../Helpers/inputHelper";
 import { useRegisterUserMutation } from "../../Apis/AuthApi";
 import { apiResponse } from "../../Interfaces";
 import toastNotify from "../../Helpers/toastNotify";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
