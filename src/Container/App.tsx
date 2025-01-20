@@ -4,7 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { Footer, Header } from "./Layout";
 import HomePage from "../Pages/Home";
 import { Route, Routes } from "react-router-dom";
-import { MenuItemDetails } from "./Page/MenuItems";
+import { MenuItemDetails, NotFound } from "./Page/MenuItems";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetShoppingCartQuery } from "../Apis/shoppingCartApi";
 import { useEffect } from "react";
@@ -21,6 +21,8 @@ import AccessDenied from "./Page/AccessDenied";
 import { RootStore } from "../Store/Redux/store";
 import Payment from "./Page/Payment";
 import OrderConfirm from "./Page/OrderConfirm";
+import MyOrders from "./Page/Order/MyOrders";
+import OrderDetails from "./Page/Order/OrderDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -64,12 +66,15 @@ function App() {
           ></Route>
           <Route path="/accessDenied" element={<AccessDenied />}></Route>
           <Route path="/shoppingCart" element={<ShoppingCart />}></Route>
-          <Route path="/payment" element={<Payment />}></Route>
-          <Route path="/order/orderConfirmed/:id" element={<OrderConfirm />}></Route>
           <Route
             path="/menuItemDetails/:menuItemId"
             element={<MenuItemDetails />}
           ></Route>
+          <Route path="/payment" element={<Payment />}></Route>
+          <Route path="/order/orderConfirmed/:id" element={<OrderConfirm />}></Route>
+          <Route path="/order/myOrders" element={<MyOrders />}></Route>
+          <Route path="/order/orderDetails/:id" element={<OrderDetails />}></Route>
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
       </div>
 
